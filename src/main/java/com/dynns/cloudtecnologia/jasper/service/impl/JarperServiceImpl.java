@@ -1,32 +1,34 @@
 package com.dynns.cloudtecnologia.jasper.service.impl;
 
+import com.dynns.cloudtecnologia.jasper.exception.GeralException;
 import com.dynns.cloudtecnologia.jasper.service.JarperService;
+import com.dynns.cloudtecnologia.jasper.util.ArquivoUtils;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+
 
 @Service
 public class JarperServiceImpl implements JarperService {
 
-    //Aponta para a o pacote resource na raiz
+    //classpath: Aponta para a o pacote resource na raiz
     private static final String JASPER_DIRETORIO = "classpath:/jasper/lancamentos_relatorio.jasper";
+    private static final Logger LOG = LoggerFactory.getLogger(JarperServiceImpl.class);
 
     @Autowired
     private ResourceLoader resourceLoader;
 
     @Override
-    public  byte[] gerarRelatorio() {
-
+    public String gerarRelatorio() {
         try {
+            LOG.info(resourceLoader.getResource(JASPER_DIRETORIO).getFilename());
+
             // Carregando o arquivo .jasper
             InputStream jasperStream = resourceLoader.getResource(JASPER_DIRETORIO).getInputStream();
 
@@ -37,27 +39,21 @@ public class JarperServiceImpl implements JarperService {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null);
 
             // Exportando para PDF
-            return exportarParaPDF(jasperPrint);
+            byte[] relatorioByte = exportarParaPDF2(jasperPrint);
+            File arquivo = ArquivoUtils.byteTofile(relatorioByte, "relatorio.pdf");
+
+            return arquivo.getName();
 
         } catch (IOException | JRException e) {
-            throw new RuntimeException(e);
+            throw new GeralException("Erro ao Gerar relatório! " + e.getCause());
         }
-
     }
 
-
-    private byte[] exportarParaPDF(JasperPrint jasperPrint) throws JRException {
-        // Exportador para PDF
-        JRPdfExporter pdfExporter = new JRPdfExporter();
-
-        // Configuração do exportador
-        pdfExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-
-        // Exportando para byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        pdfExporter.setParameter(JRExporterParameter.OUTPUT_STREAM, baos);
-        pdfExporter.exportReport();
-
-        return baos.toByteArray();
+    private byte[] exportarParaPDF2(JasperPrint jasperPrint) {
+        try {
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+        } catch (JRException e) {
+            throw new GeralException("Erro ao exportar para PDF" + e.getCause());
+        }
     }
 }

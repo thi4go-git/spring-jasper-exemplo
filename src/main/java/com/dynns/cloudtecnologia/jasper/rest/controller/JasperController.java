@@ -17,8 +17,8 @@ public class JasperController {
 
     @GetMapping
     public ResponseEntity<String> gerarRelatorio() {
-        jasperService.gerarRelatorio();
-        return ResponseEntity.ok("TETE");
+        String name = jasperService.gerarRelatorio();
+        return ResponseEntity.ok(name);
     }
 
 }
