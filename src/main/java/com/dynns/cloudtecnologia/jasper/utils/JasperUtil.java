@@ -50,6 +50,22 @@ public abstract class JasperUtil {
         }
     }
 
+    public static JasperPrint gerarJasperPrintPostgresBasico(Resource resourceJasper, Map<String, Object> parameters )  {
+        InputStream streamJasper= null;
+        try {
+            streamJasper = resourceJasper.getInputStream();
+        } catch (IOException e) {
+            throw new GeralException("Erro de IOException ao gerar InputStream do arquivo: "+resourceJasper.getFilename()+" - "+e.getCause());
+        }
+
+        try {
+            return JasperFillManager.fillReport(streamJasper,parameters);
+        } catch (JRException e) {
+            throw new GeralException("Erro de JRException ao gerar JasperPrint(report,parameters,dataSource), causa: "+e.getCause());
+        }
+    }
+
+
     public static String  exportarJasperPrintToXLS(File file, JasperPrint print){
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              OutputStream fileOutputStream = new FileOutputStream(file)) {

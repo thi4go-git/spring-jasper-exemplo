@@ -20,4 +20,10 @@ public class JasperController {
         return ResponseEntity.ok().body(arquivoName);
     }
 
+    @GetMapping("postgres-basico")
+    public ResponseEntity<String> gerarRelatorioPostgresBasico(){
+        String arquivoName = "Arquivo postgreSQL Básico gerado: ".concat(jasperService.geraRelatorioPostgresBasico());
+        return ResponseEntity.ok().body(arquivoName);
+    }
+
 }

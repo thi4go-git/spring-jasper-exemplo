@@ -5,6 +5,7 @@ import com.dynns.cloudtecnologia.jasper.service.JasperService;
 import com.dynns.cloudtecnologia.jasper.utils.ArquivoUtil;
 import com.dynns.cloudtecnologia.jasper.utils.JasperUtil;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -22,6 +23,7 @@ public class JasperServiceImpl implements JasperService {
     private String jasperPath;
     private static final String JRXML = "folha.jrxml";
     private static final String FOLHA_GERADA = "folhaGerada.pdf";
+    private static final String JASPER = "exemplo_postgres.jasper";
 
     @Override
     public String geraRelatorioFolhaEmater() {
@@ -55,6 +57,18 @@ public class JasperServiceImpl implements JasperService {
         File fileFolhaGeradaPDF = ArquivoUtil.gerarFileByPathStringToPDF(resourceFolha);
 
        return JasperUtil.exportarJasperPrintToXLS(fileFolhaGeradaPDF,jasperPrint);
+    }
+
+    @Override
+    public String geraRelatorioPostgresBasico() {
+        //Lendo caminho .jrxml
+        Resource resourceJasper= resourceLoader.getResource(jasperPath.concat(JASPER));
+
+        Map<String, Object> parameters = new HashMap<>();
+        JasperPrint jasperPrint = JasperUtil.gerarJasperPrintPostgresBasico(resourceJasper,parameters);
+        Log.info("::: JasperPrint GERADO!!! :::");
+
+        return "Sucesso";
     }
 
 
