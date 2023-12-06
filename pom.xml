@@ -76,6 +76,12 @@
 			<artifactId>lombok</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version> <!-- Use a versão adequada -->
+		</dependency>
+
 	</dependencies>
 
 	<build>
