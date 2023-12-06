@@ -19,13 +19,13 @@ import java.util.Map;
 
 
 @Component
-public abstract class JasperUtil {
+public abstract class JasperUtilEmater {
 
-    private JasperUtil(){}
+    private JasperUtilEmater(){}
 
 
     private static final String PATH_RELATORIOS_SAVE = "C:\\Users\\thiago-am\\Desktop\\DEVELOPMENT\\jasper-relatorios\\";
-    private static final Log LOG = LogFactory.getLog(JasperUtil.class);
+    private static final Log LOG = LogFactory.getLog(JasperUtilEmater.class);
 
     public static JasperPrint gerarJasperPrintFolhaItemDtoResponseByJRXML(List<FolhaItemResponseDTO> itensFolha, Resource resourceJrxml, Map<String, Object> parameters )  {
         InputStream streamJrxml = null;
@@ -46,25 +46,9 @@ public abstract class JasperUtil {
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(itensFolha);
             return JasperFillManager.fillReport(report,parameters,dataSource);
         } catch (JRException e) {
-            throw new GeralException("Erro de JRException ao gerar JasperPrint(report,parameters,dataSource), causa: "+e.getCause());
+            throw new GeralException("Erro de JRException gerarJasperPrintFolhaItemDtoResponseByJRXML(report,parameters,dataSource), causa: "+e.getCause());
         }
     }
-
-    public static JasperPrint gerarJasperPrintPostgresBasico(Resource resourceJasper, Map<String, Object> parameters )  {
-        InputStream streamJasper= null;
-        try {
-            streamJasper = resourceJasper.getInputStream();
-        } catch (IOException e) {
-            throw new GeralException("Erro de IOException ao gerar InputStream do arquivo: "+resourceJasper.getFilename()+" - "+e.getCause());
-        }
-
-        try {
-            return JasperFillManager.fillReport(streamJasper,parameters);
-        } catch (JRException e) {
-            throw new GeralException("Erro de JRException ao gerar JasperPrint(report,parameters,dataSource), causa: "+e.getCause());
-        }
-    }
-
 
     public static String  exportarJasperPrintToXLS(File file, JasperPrint print){
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -96,16 +80,6 @@ public abstract class JasperUtil {
             throw new GeralException("Erro de E/S IOException: "+ e.getCause());
         } catch (JRException e) {
             throw new GeralException("Erro no JasperReports JRException: "+ e.getCause());
-        }
-    }
-
-    public static void exportarJasperPrintToPDF(JasperPrint jasperPrint ){
-        try {
-            byte[] bytesPDF = JasperExportManager.exportReportToPdf(jasperPrint);
-            File xlsGerado = ArquivoUtil.byteTofile(bytesPDF,PATH_RELATORIOS_SAVE.concat("testePDF.pdf"));
-            LOG.info("Relatório PDF gerado com Sucesso! "+xlsGerado.getAbsolutePath());
-        } catch (JRException e) {
-            throw new GeralException("Erro ao exportar para PDF" + e.getCause());
         }
     }
 

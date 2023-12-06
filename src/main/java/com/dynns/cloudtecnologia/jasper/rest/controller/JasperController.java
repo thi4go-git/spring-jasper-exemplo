@@ -14,15 +14,9 @@ public class JasperController {
     @Autowired
     private JasperServiceImpl jasperService;
 
-    @GetMapping("xls")
-    public ResponseEntity<String> gerarRelatorioXLS(){
+    @GetMapping("xls-emater")
+    public ResponseEntity<String> geraRelatorioFolhaEmaterXLS(){
         String arquivoName = "Arquivo gerado: ".concat(jasperService.geraRelatorioFolhaEmater());
-        return ResponseEntity.ok().body(arquivoName);
-    }
-
-    @GetMapping("postgres-basico")
-    public ResponseEntity<String> gerarRelatorioPostgresBasico(){
-        String arquivoName = "Arquivo postgreSQL Básico gerado: ".concat(jasperService.geraRelatorioPostgresBasico());
         return ResponseEntity.ok().body(arquivoName);
     }
 

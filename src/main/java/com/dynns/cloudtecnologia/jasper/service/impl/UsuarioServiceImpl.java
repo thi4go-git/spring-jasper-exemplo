@@ -6,6 +6,8 @@ import com.dynns.cloudtecnologia.jasper.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
@@ -14,8 +16,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Override
-    public Usuario findByAll() {
-        usuarioRepository.findAll();
-        return usuarioRepository.findAll().
+    public List<Usuario> findByAll() {
+        return usuarioRepository.findAll();
     }
 }

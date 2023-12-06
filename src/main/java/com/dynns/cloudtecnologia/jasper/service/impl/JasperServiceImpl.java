@@ -3,9 +3,8 @@ package com.dynns.cloudtecnologia.jasper.service.impl;
 import com.dynns.cloudtecnologia.jasper.rest.dto.FolhaItemResponseDTO;
 import com.dynns.cloudtecnologia.jasper.service.JasperService;
 import com.dynns.cloudtecnologia.jasper.utils.ArquivoUtil;
-import com.dynns.cloudtecnologia.jasper.utils.JasperUtil;
+import com.dynns.cloudtecnologia.jasper.utils.JasperUtilEmater;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -24,6 +23,11 @@ public class JasperServiceImpl implements JasperService {
     private static final String JRXML = "folha.jrxml";
     private static final String FOLHA_GERADA = "folhaGerada.pdf";
     private static final String JASPER = "exemplo_postgres.jasper";
+
+
+    @Autowired
+    private UsuarioServiceImpl usuarioService;
+
 
     @Override
     public String geraRelatorioFolhaEmater() {
@@ -51,25 +55,14 @@ public class JasperServiceImpl implements JasperService {
         //Lendo caminho .jrxml
         Resource resourceJrxml= resourceLoader.getResource(jasperPath.concat(JRXML));
 
-        JasperPrint jasperPrint = JasperUtil.gerarJasperPrintFolhaItemDtoResponseByJRXML(itensFolha,resourceJrxml,parameters);
+        JasperPrint jasperPrint = JasperUtilEmater.gerarJasperPrintFolhaItemDtoResponseByJRXML(itensFolha,resourceJrxml,parameters);
         Resource resourceFolha = resourceLoader.getResource(jasperPath.concat(FOLHA_GERADA));
 
         File fileFolhaGeradaPDF = ArquivoUtil.gerarFileByPathStringToPDF(resourceFolha);
 
-       return JasperUtil.exportarJasperPrintToXLS(fileFolhaGeradaPDF,jasperPrint);
+       return JasperUtilEmater.exportarJasperPrintToXLS(fileFolhaGeradaPDF,jasperPrint);
     }
 
-    @Override
-    public String geraRelatorioPostgresBasico() {
-        //Lendo caminho .jrxml
-        Resource resourceJasper= resourceLoader.getResource(jasperPath.concat(JASPER));
-
-        Map<String, Object> parameters = new HashMap<>();
-        JasperPrint jasperPrint = JasperUtil.gerarJasperPrintPostgresBasico(resourceJasper,parameters);
-        Log.info("::: JasperPrint GERADO!!! :::");
-
-        return "Sucesso";
-    }
 
 
 }
