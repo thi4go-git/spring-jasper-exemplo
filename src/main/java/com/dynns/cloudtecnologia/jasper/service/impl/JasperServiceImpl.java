@@ -29,7 +29,12 @@ public class JasperServiceImpl implements JasperService {
     @Value("${jasper.path}")
     private String jasperPath;
     private static final String JRXML = "folha.jrxml";
+
+    private static final String JRXML1 = "teste.jrxml";
+
+    private static final String JRXML2 = "folha - Copia.jrxml";
     private static final String FOLHA_GERADA = "folhaGerada.pdf";
+
 
 
     @Override
@@ -49,7 +54,7 @@ public class JasperServiceImpl implements JasperService {
 
     private byte[] getByteExcelEnvironment(List<FolhaItemDtoResponse> itensFolha)   {
 
-        Resource resourceJrxml = resourceLoader.getResource(jasperPath.concat(JRXML));
+        Resource resourceJrxml = resourceLoader.getResource(jasperPath.concat(JRXML1));
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("mesAno", "Abril / 2023");
@@ -72,28 +77,28 @@ public class JasperServiceImpl implements JasperService {
         List<FolhaItemDtoResponse> itensFolha = new ArrayList<>();
 
         FolhaItemDtoResponse obj1 = new FolhaItemDtoResponse();
-        obj1.setNomeNatureza("3.1.90.11.01");
+        obj1.setNomeNatureza("Natureza 01");
         obj1.setNomeEscolhido("AJUSTE REM. - LEI 17.030 - RPPS");
         obj1.setNumeroNatureza("3.1.90.11.01");
         obj1.setValorFinal(1500.00);
         obj1.setRegimePrev("RPPS");
 
         FolhaItemDtoResponse obj2 = new FolhaItemDtoResponse();
-        obj2.setNomeNatureza("3.1.90.11.01");
+        obj2.setNomeNatureza("Natureza 01");
         obj2.setNomeEscolhido("ANUENIO - VI - RGPS");
         obj2.setNumeroNatureza("3.1.90.11.01");
         obj2.setValorFinal(500.00);
         obj2.setRegimePrev("RGPS");
 
         FolhaItemDtoResponse obj3 = new FolhaItemDtoResponse();
-        obj3.setNomeNatureza("3.1.90.11.02");
+        obj3.setNomeNatureza("Natureza 02");
         obj3.setNomeEscolhido("FUNCAO COMISSIONADA - FCPE - RPPS");
         obj3.setNumeroNatureza("3.1.90.11.02");
         obj3.setValorFinal(4500.00);
         obj3.setRegimePrev("RPPS");
 
         FolhaItemDtoResponse obj4 = new FolhaItemDtoResponse();
-        obj4.setNomeNatureza("3.1.90.11.02");
+        obj4.setNomeNatureza("Natureza 02");
         obj4.setNomeEscolhido("FUNCAO COMISSIONADA - FCPE - RGPS");
         obj4.setNumeroNatureza("3.1.90.11.02");
         obj4.setValorFinal(4567.65);
