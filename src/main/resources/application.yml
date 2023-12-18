@@ -1,19 +1,9 @@
+server:
+  port: 8089
+
 jasper:
   path: 'classpath:/jasper/'
 
 spring:
   application:
     name: Exemplos JASPER
-  datasource:
-    url: jdbc:postgresql://cloudtecnologia.dynns.com:5432/alvara
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 895674
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: false
-    hibernate:
-      ddl-auto: update

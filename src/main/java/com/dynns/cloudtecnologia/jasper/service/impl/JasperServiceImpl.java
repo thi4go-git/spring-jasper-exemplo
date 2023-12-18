@@ -1,33 +1,27 @@
 package com.dynns.cloudtecnologia.jasper.service.impl;
 
-import com.dynns.cloudtecnologia.jasper.exception.GeralException;
-import com.dynns.cloudtecnologia.jasper.rest.dto.FolhaItemResponseDTO;
+import com.dynns.cloudtecnologia.jasper.rest.dto.FolhaItemDtoResponse;
 import com.dynns.cloudtecnologia.jasper.service.JasperService;
 import com.dynns.cloudtecnologia.jasper.utils.ArquivoUtil;
-import com.dynns.cloudtecnologia.jasper.utils.JasperUtilEmater;
-import com.dynns.cloudtecnologia.jasper.utils.JasperUtilGeral;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
+import com.dynns.cloudtecnologia.jasper.utils.UtilJasper;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.jfree.util.Log;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
-import java.sql.Connection;
 import java.util.*;
+
 
 @Service
 public class JasperServiceImpl implements JasperService {
 
-    @Autowired
-    private UsuarioServiceImpl usuarioService;
 
-    @Autowired
-    private Connection connection;
+    private static final Log LOG = LogFactory.getLog(JasperServiceImpl.class);
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -36,66 +30,81 @@ public class JasperServiceImpl implements JasperService {
     private String jasperPath;
     private static final String JRXML = "folha.jrxml";
     private static final String FOLHA_GERADA = "folhaGerada.pdf";
-    private static final String JRXML_TESTE_DIRETA = "testeDireta.jrxml";
 
 
     @Override
-    public String geraRelatorioFolhaEmater() {
+    public String geraRelatorio() {
 
-        //Cabeçalho do relatório
+        List<FolhaItemDtoResponse> itensFolha = getListFolhaItem();
+
+        byte[] bytesFolha = getByteExcelEnvironment(itensFolha);
+        LOG.info("::: bytesFolha GERADO com Sucesso :::");
+
+        File arquivo = ArquivoUtil.byteTofile(bytesFolha, "C:\\Users\\thiago-am\\Downloads\\FolhaGerada.xls");
+        LOG.info("::: FolhaGerada GERADA com Sucesso :::");
+
+        assert arquivo != null;
+        return  arquivo.getName();
+    }
+
+    private byte[] getByteExcelEnvironment(List<FolhaItemDtoResponse> itensFolha)   {
+
+        Resource resourceJrxml = resourceLoader.getResource(jasperPath.concat(JRXML));
+
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("mesAno", "Abril / 2023");
         parameters.put("numeroProcesso", "1235512610054");
         parameters.put("valorTotal", "5.468.223,45");
 
-        //Preenchendo LISTA
-        FolhaItemResponseDTO iten = new FolhaItemResponseDTO();
-        iten.setNomeEscolhido("Nome");
-        iten.setNomeNatureza("Natureza 12345");
-        iten.setNomeUsuarioCadastro("User teste");
-        iten.setDataCadastro(new Date());
-        iten.setId_natureza(1L);
-        iten.setDescricaoTipoCodigoNatureza("Descrição");
-        iten.setIdFolha(2L);
-        iten.setValorDevolucao(15.2);
-        iten.setValorFinal(45.66);
-        List<FolhaItemResponseDTO> itensFolha = new ArrayList<>();
-        itensFolha.add(iten);
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(itensFolha);
 
-        //Lendo caminho .jrxml
-        Resource resourceJrxml = resourceLoader.getResource(jasperPath.concat(JRXML));
+        JasperPrint jasperPrint = UtilJasper.gerarJasperPrintByJRXML(resourceJrxml, parameters, dataSource);
+        LOG.info("::: jasperPrint GERADO com Sucesso :::");
 
-        JasperPrint jasperPrint = JasperUtilEmater.gerarJasperPrintFolhaItemDtoResponseByJRXML(itensFolha, resourceJrxml, parameters);
-        Resource resourceFolha = resourceLoader.getResource(jasperPath.concat(FOLHA_GERADA));
+        Resource resourceFolhaPdf = resourceLoader.getResource(jasperPath.concat(FOLHA_GERADA));
+        File fileFolhaGeradaPDF = ArquivoUtil.gerarPdfFileByResource(resourceFolhaPdf);
+        LOG.info("::: fileFolhaGeradaPDF GERADO com Sucesso :::");
 
-        File fileFolhaGeradaPDF = ArquivoUtil.gerarFileByPathStringToPDF(resourceFolha);
-
-        return JasperUtilEmater.exportarJasperPrintToXLS(fileFolhaGeradaPDF, jasperPrint);
+        return UtilJasper.exportarJasperPrintParaXLS(fileFolhaGeradaPDF, jasperPrint);
     }
 
-    @Override
-    public String gerarRelatorioConexaoDireta() {
+    private List<FolhaItemDtoResponse> getListFolhaItem(){
+        List<FolhaItemDtoResponse> itensFolha = new ArrayList<>();
 
-        //Lendo caminho .jasper
-        Resource resourceJrxml = resourceLoader.getResource(jasperPath.concat(JRXML_TESTE_DIRETA));
-        Log.info("::: resourceJasper  ::: "+resourceJrxml.getFilename());
+        FolhaItemDtoResponse obj1 = new FolhaItemDtoResponse();
+        obj1.setNomeNatureza("3.1.90.11.01");
+        obj1.setNomeEscolhido("AJUSTE REM. - LEI 17.030");
+        obj1.setNumeroNatureza("3.1.90.11.01");
+        obj1.setValorFinal(1500.00);
+        obj1.setRegimePrev("RPPS");
 
-        Map<String, Object> parameters = new HashMap<>();
+        FolhaItemDtoResponse obj2 = new FolhaItemDtoResponse();
+        obj2.setNomeNatureza("3.1.90.11.01");
+        obj2.setNomeEscolhido("ANUENIO - VI");
+        obj2.setNumeroNatureza("3.1.90.11.01");
+        obj2.setValorFinal(500.00);
+        obj2.setRegimePrev("RGPS");
 
-        JasperPrint jasperPrint = JasperUtilGeral.gerarJasperPrintConexaoDiretaJASPER(resourceJrxml, parameters, connection);
-        Log.info("::: JasperPrint gerado Com Sucesso! :::");
+        FolhaItemDtoResponse obj3 = new FolhaItemDtoResponse();
+        obj3.setNomeNatureza("3.1.90.11.02");
+        obj3.setNomeEscolhido("FUNCAO COMISSIONADA - FCPE - RPPS");
+        obj3.setNumeroNatureza("3.1.90.11.02");
+        obj3.setValorFinal(4500.00);
+        obj3.setRegimePrev("RPPS");
 
-        byte[] bytes = null;
-        try {
-            bytes = JasperExportManager.exportReportToPdf(jasperPrint);
-            Log.info("::: BYTES gerados Com Sucesso! :::");
-        } catch (JRException e) {
-            throw new GeralException("Erro ao gerar BYTES: " + e.getMessage());
-        }
+        FolhaItemDtoResponse obj4 = new FolhaItemDtoResponse();
+        obj4.setNomeNatureza("3.1.90.11.02");
+        obj4.setNomeEscolhido("FUNCAO COMISSIONADA - FCPE - RGPS");
+        obj4.setNumeroNatureza("3.1.90.11.02");
+        obj4.setValorFinal(500.00);
+        obj4.setRegimePrev("RGPS");
 
-        File arquivo = ArquivoUtil.byteTofile(bytes, "conecDiretaExPDF.pdf");
+        itensFolha.add(obj1);
+        itensFolha.add(obj2);
+        itensFolha.add(obj3);
+        itensFolha.add(obj4);
 
-        return arquivo.getAbsolutePath();
+        return itensFolha;
     }
 
 
