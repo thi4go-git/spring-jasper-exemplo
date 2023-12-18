@@ -73,14 +73,14 @@ public class JasperServiceImpl implements JasperService {
 
         FolhaItemDtoResponse obj1 = new FolhaItemDtoResponse();
         obj1.setNomeNatureza("3.1.90.11.01");
-        obj1.setNomeEscolhido("AJUSTE REM. - LEI 17.030");
+        obj1.setNomeEscolhido("AJUSTE REM. - LEI 17.030 - RPPS");
         obj1.setNumeroNatureza("3.1.90.11.01");
         obj1.setValorFinal(1500.00);
         obj1.setRegimePrev("RPPS");
 
         FolhaItemDtoResponse obj2 = new FolhaItemDtoResponse();
         obj2.setNomeNatureza("3.1.90.11.01");
-        obj2.setNomeEscolhido("ANUENIO - VI");
+        obj2.setNomeEscolhido("ANUENIO - VI - RGPS");
         obj2.setNumeroNatureza("3.1.90.11.01");
         obj2.setValorFinal(500.00);
         obj2.setRegimePrev("RGPS");
@@ -96,7 +96,7 @@ public class JasperServiceImpl implements JasperService {
         obj4.setNomeNatureza("3.1.90.11.02");
         obj4.setNomeEscolhido("FUNCAO COMISSIONADA - FCPE - RGPS");
         obj4.setNumeroNatureza("3.1.90.11.02");
-        obj4.setValorFinal(500.00);
+        obj4.setValorFinal(4567.65);
         obj4.setRegimePrev("RGPS");
 
         itensFolha.add(obj1);

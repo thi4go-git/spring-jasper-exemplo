@@ -36,37 +36,19 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>6.16.0</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>5.2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jxls</groupId>
-			<artifactId>jxls-jexcel</artifactId>
-			<version>1.0.9</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.dhatim</groupId>
-			<artifactId>fastexcel-reader</artifactId>
-			<version>0.15.3</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.15.0</version>
 		</dependency>
 
 	</dependencies>
